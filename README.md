@@ -1,2 +1,394 @@
-# hbg62197148.github.io
-Self-introduction
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 測試</title>
+        <link rel="stylesheet" href="mystyle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <div class="header">
+            <h1>API 測試</h1>
+        </div>
+
+        <!-- 主要內容區域 -->
+        <div class="main-grid">
+            <!-- 參數配置區域 -->
+            <div class="glass-card">
+                <h2 class="card-title">
+                    <span class="icon">⚙️</span>參數配置
+                </h2>
+                
+                <form id="apiForm">
+                    <!-- API接口選擇 -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="icon">🔗</span>選擇API接口
+                        </label>
+                        <div class="api-grid">
+                            <div class="api-section">
+                                <div class="api-section-title">Chat 類接口</div>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="/test/chat/model_list" data-type="chat">
+                                    獲取模型列表
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/chat/q" data-type="chat" checked>
+                                    新問題提問
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/chat/motive" data-type="chat">
+                                    通知相關
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/chat/list" data-type="chat">
+                                    聊天列表
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/chat/extract" data-type="chat">
+                                    內容提取
+                                </label>
+                            </div>
+                            <div class="api-section">
+                                <div class="api-section-title">G 類接口</div>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/g/generate_list" data-type="g">
+                                    生成列表
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/g/generate_detail" data-type="g">
+                                    生成詳情
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/g/generate" data-type="g">
+                                    內容生成
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/g/search_keyword" data-type="g">
+                                    關鍵詞搜尋
+                                </label>
+                                <label class="api-option">
+                                    <input type="radio" name="apiEndpoint" value="https://ai.orangenews.hk/test/g/kv" data-type="g">
+                                    鍵值對操作
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 基本參數 -->
+                    <div class="parameter-section">
+                        <div class="parameter-title">基本參數</div>
+                        <div class="parameter-grid">
+                            <!-- 模型選擇 -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="icon">🤖</span>選擇模型
+                                </label>
+                                <select id="modelSelect" class="form-control">
+                                    <option value="千問">千問</option>
+                                    <option value="deepseek-v3" selected>deepseek-v3</option>
+                                    <option value="deepseek-r1">deepseek-r1</option>
+                                    <option value="百度">百度</option>
+                                    <option value="gpt4.0">gpt4.0</option>
+                                    <option value="gpt-4o-mini">gpt-4o-mini</option>
+                                </select>
+                            </div>
+
+                            <!-- Session Key -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="icon">🔑</span>Session Key
+                                </label>
+                                <input type="text" id="sessionKey" class="form-control" 
+                                       placeholder="請輸入Session Key">
+                            </div>
+                        </div>
+
+                        <!-- 用戶ID和會話ID -->
+                        <div class="parameter-grid">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="icon">👤</span>用戶ID
+                                </label>
+                                <input type="text" id="userId" class="form-control" 
+                                       placeholder="請輸入用戶ID">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <span class="icon">💬</span>會話ID
+                                </label>
+                                <input type="text" id="sessionId" class="form-control" 
+                                       placeholder="請輸入會話ID">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 內容輸入 -->
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="icon">📝</span>內容輸入
+                        </label>
+                        <textarea id="textContent" class="form-control textarea" 
+                                  placeholder="請輸入文本內容或問題..."></textarea>
+                    </div>
+
+                    <!-- 操作按鈕 -->
+                    <div class="button-group">
+                        <button type="submit" id="callApiBtn" class="btn btn-primary">
+                            <span class="icon">🚀</span>
+                            <span id="btnText">發起API調用</span>
+                            <div id="loadingSpinner" class="loading-spinner hidden"></div>
+                        </button>
+                        <button type="button" id="clearLogBtn" class="btn btn-secondary">
+                            <span class="icon">🗑️</span>清空日誌
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 日誌顯示區域 -->
+            <div class="glass-card">
+                <h2 class="card-title">
+                    <span class="icon">📋</span>調用日誌
+                </h2>
+                <div id="logContainer" class="log-container">
+                    <div class="empty-state">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+                        <p>點擊"發起API調用"開始測試...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logCounter = 0;
+
+        // API調用函數映射
+        const apiConfigs = {
+            '/test/chat/model_list': {
+                
+                method: 'POST'
+            },
+            '/test/chat/q': {
+                requiredParams: ['model', 'session_key', 'text'],
+                method: 'POST'
+            },
+            '/test/chat/motive': {
+                requiredParams: ['model', 'session_key', 'user_id'],
+                method: 'POST'
+            },
+            '/test/chat/list': {
+                requiredParams: ['session_key', 'user_id'],
+                method: 'POST'
+            },
+            '/test/chat/extract': {
+                requiredParams: ['model', 'session_key', 'text'],
+                method: 'POST'
+            },
+            '/test/g/generate_list': {
+                requiredParams: ['session_key', 'text'],
+                method: 'POST'
+            },
+            '/test/g/generate_detail': {
+                requiredParams: ['session_key', 'id'],
+                method: 'PSOT'
+            },
+            '/test/g/generate': {
+                requiredParams: ['model', 'session_key', 'text'],
+                method: 'POST'
+            },
+            '/test/g/search_keyword': {
+                requiredParams: ['session_key', 'keyword', 'text'],
+                method: 'POST'
+            },
+            '/test/g/kv': {
+                requiredParams: ['session_key', 'key'],
+                method: 'POST'
+            }
+        };
+
+        // 通用API調用函數
+        async function callAPI(endpoint, params) {
+            const config = apiConfigs[endpoint];
+            if (!config) {
+                throw new Error(`未知的API端點：${endpoint}`);
+            }
+
+            // 檢查必需參數
+            for (const param of config.requiredParams) {
+                if (!params[param]) {
+                    throw new Error(`缺少必要參數：${param}`);
+                }
+            }
+
+            const baseUrl = 'https://ai.orangenews.hk';
+            const url = `${baseUrl}${endpoint}`;
+
+            const requestOptions = {
+                method: config.method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+            };
+
+            if (config.method === 'POST') {
+                requestOptions.body = JSON.stringify(params);
+            } else {
+                // GET請求將參數添加到URL
+                const searchParams = new URLSearchParams(params);
+                url += '?' + searchParams.toString();
+            }
+
+            const response = await fetch(url, requestOptions);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+            }
+
+            return await response.json();
+        }
+
+        // 添加日誌函數
+        function addLog(type, title, content) {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleString('zh-TW');
+            logCounter++;
+
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            const typeClasses = {
+                'request': 'log-type-request',
+                'success': 'log-type-success',
+                'error': 'log-type-error'
+            };
+
+            const typeIcons = {
+                'request': '📤',
+                'success': '✅',
+                'error': '❌'
+            };
+
+            logEntry.innerHTML = `
+                <div class="log-header">
+                    <span class="${typeClasses[type]}">
+                        ${typeIcons[type]} ${title}
+                    </span>
+                    <span class="log-timestamp">${timestamp}</span>
+                </div>
+                <div class="log-content">${content}</div>
+            `;
+
+            // 首次添加日誌時清空初始提示
+            if (logCounter === 1) {
+                logContainer.innerHTML = '';
+            }
+
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // 表單提交處理
+        document.getElementById('apiForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // 獲取表單數據
+            const selectedEndpoint = document.querySelector('input[name="apiEndpoint"]:checked').value;
+            const model = document.getElementById('modelSelect').value;
+            const sessionKey = document.getElementById('sessionKey').value.trim();
+            const userId = document.getElementById('userId').value.trim();
+            const sessionId = document.getElementById('sessionId').value.trim();
+            const text = document.getElementById('textContent').value.trim();
+
+            // 構建參數對象
+            const params = {
+                model: model,
+                session_key: sessionKey,
+                user_id: userId,
+                sessionid: sessionId,
+                text: text,
+                keyword: text, // 用於搜尋關鍵詞
+                key: text, // 用於鍵值對操作
+                id: userId // 用於詳情查詢
+            };
+
+            // 獲取按鈕元素
+            const callApiBtn = document.getElementById('callApiBtn');
+            const btnText = document.getElementById('btnText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // 基本驗證
+            if (!sessionKey) {
+                alert('請輸入Session Key');
+                return;
+            }
+
+            // 根據不同接口進行特定驗證
+            const config = apiConfigs[selectedEndpoint];
+            if (config.requiredParams.includes('text') && !text) {
+                alert('請輸入內容');
+                return;
+            }
+
+            // 顯示載入狀態
+            callApiBtn.disabled = true;
+            btnText.textContent = '調用中...';
+            loadingSpinner.classList.remove('hidden');
+
+            try {
+                // 記錄請求日誌
+                const requestData = {
+                    endpoint: selectedEndpoint,
+                    method: config.method,
+                    params: Object.fromEntries(
+                        Object.entries(params).filter(([key, value]) => 
+                            config.requiredParams.includes(key) && value
+                        )
+                    )
+                };
+                
+                addLog('request', `發起API請求 - ${selectedEndpoint}`, 
+                       JSON.stringify(requestData, null, 2));
+
+                // 發起API調用
+                const result = await callAPI(selectedEndpoint, params);
+
+                // 記錄成功日誌
+                addLog('success', 'API調用成功', JSON.stringify(result, null, 2));
+
+            } catch (error) {
+                // 記錄錯誤日誌
+                addLog('error', 'API調用失敗', error.message);
+            } finally {
+                // 恢復按鈕狀態
+                callApiBtn.disabled = false;
+                btnText.textContent = '發起API調用';
+                loadingSpinner.classList.add('hidden');
+            }
+        });
+
+        // 清空日誌
+        document.getElementById('clearLogBtn').addEventListener('click', () => {
+            const logContainer = document.getElementById('logContainer');
+            logContainer.innerHTML = `
+                <div class="empty-state">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+                    <p>點擊"發起API調用"開始測試...</p>
+                </div>
+            `;
+            logCounter = 0;
+        });
+
+        // 頁面載入完成後的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('API測試工具已載入完成');
+        });
+    </script>
+</body>
+</html>
